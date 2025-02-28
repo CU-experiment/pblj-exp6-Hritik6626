@@ -1,0 +1,138 @@
+Easy Level:
+Write a program to sort a list of Employee objects (name, age, salary) using lambda expressions.
+
+import java.util.*;
+class Employee {
+    String name;
+    int age;
+    double salary;
+
+    public Employee(String name, int age, double salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+    }
+   @Override
+    public String toString() {
+        return name + ", " + age + ", $" + salary;
+    }
+}
+
+public class EmployeeSort {
+    public static void main(String[] args) {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee("Hritik", 30, 50000));
+        employees.add(new Employee("rahul", 25, 60000));
+        employees.add(new Employee("anand", 35, 55000));
+        employees.add(new Employee("siddharth", 28, 52000));
+
+        // Sorting by name
+        employees.sort(Comparator.comparing(emp -> emp.name));
+        System.out.println("Sorted by Name: " + employees);
+
+        // Sorting by age
+        employees.sort(Comparator.comparingInt(emp -> emp.age));
+        System.out.println("Sorted by Age: " + employees);
+
+        // Sorting by salary
+        employees.sort(Comparator.comparingDouble(emp -> emp.salary));
+        System.out.println("Sorted by Salary: " + employees);
+    }
+}
+
+Medium Level:
+Create a program to use lambda expressions and stream operations to filter students scoring above 75%, sort them by marks, and display their names.
+
+import java.util.*;
+import java.util.stream.Collectors;
+class Student {
+    String name;
+    double marks;
+ public Student(String name, double marks) {
+        this.name = name;
+        this.marks = marks;
+    }
+    @Override
+    public String toString() {
+        return name + " - " + marks + "%";
+    }
+}
+public class StudentFilter {
+    public static void main(String[] args) {
+        List<Student> students = Arrays.asList(
+            new Student("hritik", 82),
+            new Student("Rahul", 74),
+            new Student("Aman", 90),
+            new Student("alok", 67),
+            new Student("subh", 78)
+        );
+
+        // Filter students scoring above 75%, sort by marks, and collect their names
+        List<String> topStudents = students.stream()
+            .filter(student -> student.marks > 75)
+            .sorted(Comparator.comparingDouble(student -> student.marks))
+            .map(student -> student.name)
+            .collect(Collectors.toList());
+
+        System.out.println("Students scoring above 75% sorted by marks: " + topStudents);
+    }
+}
+
+
+Hard Level:
+Write a Java program to process a large dataset of products using streams. Perform operations such as grouping products by category,
+finding the most expensive product in each category, and calculating the average price of all products.
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+class Product {
+    String name;
+    String category;
+    double price;
+
+    public Product(String name, String category, double price) {
+        this.name = name;
+        this.category = category;
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + category + ") - $" + price;
+    }
+}
+
+public class ProductProcessor {
+    public static void main(String[] args) {
+        List<Product> products = Arrays.asList(
+            new Product("Laptop", "Electronics", 1200.00),
+            new Product("Phone", "Electronics", 800.00),
+            new Product("Tablet", "Electronics", 500.00),
+            new Product("Shirt", "Clothing", 40.00),
+            new Product("Jeans", "Clothing", 60.00),
+            new Product("Blender", "Home Appliances", 150.00),
+            new Product("Vacuum Cleaner", "Home Appliances", 300.00)
+        );
+
+        // Group products by category
+        Map<String, List<Product>> groupedByCategory = products.stream()
+            .collect(Collectors.groupingBy(product -> product.category));
+        System.out.println("Products grouped by category: " + groupedByCategory);
+
+        // Find the most expensive product in each category
+        Map<String, Optional<Product>> mostExpensiveByCategory = products.stream()
+            .collect(Collectors.groupingBy(
+                product -> product.category,
+                Collectors.maxBy(Comparator.comparingDouble(product -> product.price))
+            ));
+        System.out.println("Most expensive product in each category: " + mostExpensiveByCategory);
+
+        // Calculate the average price of all products
+        double averagePrice = products.stream()
+            .mapToDouble(product -> product.price)
+            .average()
+            .orElse(0.0);
+        System.out.println("Average price of all products: $" + averagePrice);
+    }
+}
